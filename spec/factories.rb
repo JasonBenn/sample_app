@@ -11,7 +11,7 @@ FactoryGirl.define do
   end
 
   factory :micropost do
-    content = "bada bing bada boom"
+    content "bada bing bada boom"
     user
   end
 end
