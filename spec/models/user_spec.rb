@@ -32,6 +32,7 @@ describe User do
   it { should respond_to(:authenticate) }
   it { should respond_to(:remember_token) }
   it { should respond_to(:microposts) }
+  it { should respond_to(:feed) }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -141,7 +142,6 @@ describe User do
   end
 
   describe "microposts" do
-    #they come back in right order
     before { @user.save }
     let!(:older_micropost) do
       FactoryGirl.create(:micropost, content: "fa", user: @user, created_at: 1.day.ago)
@@ -153,6 +153,16 @@ describe User do
     it "are ordered from newest to oldest" do
       @user.microposts.should == [newer_micropost, older_micropost]
     end
-  end
 
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryGirl.create(:micropost, 
+          user: FactoryGirl.create(:user), content: "example")
+      end
+
+      its(:feed) { should include(newer_micropost) }
+      its(:feed) { should include(older_micropost) }
+      its(:feed) { should_not include (unfollowed_post) }
+    end
+  end
 end
